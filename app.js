@@ -1,9 +1,9 @@
-function createGame() {
+const game = (function () {
 	let board;
-	let playBtn;
 	let startBtn;
 	let p1;
 	let p2;
+	const type = ["X", "O"];
 
 	function init() {
 		startBtn = document.querySelector("#startBtn");
@@ -17,21 +17,18 @@ function createGame() {
 		p1 = createPlayer("José", "X");
 		p2 = createPlayer("Maria", "O");
 
-		playBtn = document.querySelector("#playBtn");
-		playBtn.addEventListener("click", playRound);
-		playBtn.disabled = false;
 		startBtn.disabled = true;
 
 		console.log(board.getBoard());
 	}
 
-	function playRound() {
-		const position = p1.play(board);
-		const type = p1.getType();
-		board.setPosition(position, type);
+	function playRound(position) {
+		const currType = type[Object.keys(board.getReg()).length % 2];
+
+		board.setPosition(position, currType);
 		console.log(board.getBoard());
 
-		if (stopCondition(type)) {
+		if (stopCondition(currType)) {
 			alert("Game over!");
 		}
 	}
@@ -70,7 +67,7 @@ function createGame() {
 	}
 
 	return { init, start, playRound };
-}
+})();
 
 function createBoard() {
 	let boardArray;
@@ -143,5 +140,15 @@ function createPlayer(name, type) {
 	};
 }
 
-const game = createGame();
 game.init();
+
+// function playRound(position, type) {
+// 	const position = p1.play(board);
+// 	const type = p1.getType();
+// 	board.setPosition(position, type);
+// 	console.log(board.getBoard());
+
+// 	if (stopCondition(type)) {
+// 		alert("Game over!");
+// 	}
+// }
