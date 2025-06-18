@@ -1,0 +1,58 @@
+/* @font-face {
+	font-family: "keep-calm";
+	src: url("fonts/keep_calm/KeepCalm-Medium.woff2") format("woff2"),
+		url("fonts/keep_calm/KeepCalm-Medium.woff") format("woff");
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+} */
+
+/* :root {
+	--default-width: 1200px;
+} */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+* {
+	margin: 0;
+}
+
+html {
+	min-height: 100%;
+	display: flex;
+	border: 1px solid purple;
+}
+
+body {
+	line-height: 1.5;
+	display: flex;
+	flex: 1 1 auto;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid blue;
+}
+
+.container {
+	border: 1px solid orange;
+}
+
+.boardContainer {
+	border: 1px solid red;
+
+	> div {
+		border: 1px solid green;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+
+		> div {
+			background-color: greenyellow;
+		}
+		> button {
+			background-color: yellow;
+		}
+	}
+}

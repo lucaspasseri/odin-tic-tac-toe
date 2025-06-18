@@ -1,34 +1,29 @@
 const game = (function () {
 	let board;
-	let startBtn;
-	let p1;
-	let p2;
+	let interface;
+
 	const type = ["X", "O"];
 
 	function init() {
-		startBtn = document.querySelector("#startBtn");
-		startBtn.addEventListener("click", start);
-	}
-
-	function start() {
 		board = createBoard();
 		board.getNewBoard();
-
-		p1 = createPlayer("José", "X");
-		p2 = createPlayer("Maria", "O");
-
-		startBtn.disabled = true;
-
-		console.log(board.getBoard());
+		interface = createInterface();
+		interface.init(board);
 	}
 
 	function playRound(position) {
+		if (typeof position === "object") {
+			const target = position.currentTarget;
+			position = Number(target.dataset.position);
+		}
+
 		const currType = type[Object.keys(board.getReg()).length % 2];
 
 		board.setPosition(position, currType);
-		console.log(board.getBoard());
+		interface.render();
 
 		if (stopCondition(currType)) {
+			interface.gameOver();
 			alert("Game over!");
 		}
 	}
@@ -66,8 +61,69 @@ const game = (function () {
 		return false;
 	}
 
-	return { init, start, playRound };
+	return { init, playRound };
 })();
+
+function createInterface() {
+	let boardRef;
+	const boardContainer = document.querySelector(".boardContainer");
+
+	function init(board) {
+		console.log("interface init");
+		boardRef = board;
+		document
+			.querySelector("#startBtn")
+			.addEventListener("click", startBtnHandler);
+		document
+			.querySelector("#resetBtn")
+			.addEventListener("click", resetBtnHandler);
+	}
+
+	function startBtnHandler(e) {
+		e.currentTarget.disabled = true;
+		document.querySelector("#resetBtn").disabled = false;
+
+		render();
+	}
+
+	function resetBtnHandler(e) {
+		e.currentTarget.disabled = true;
+		document.querySelector("#startBtn").disabled = false;
+
+		boardContainer.innerHTML = "";
+		game.init();
+	}
+
+	function gameOver() {
+		document.querySelector("#resetBtn").disabled = false;
+	}
+
+	function render() {
+		boardContainer.innerHTML = "";
+		const board = document.createElement("div");
+
+		boardRef?.getBoard().forEach((position, index) => {
+			if (position === null) {
+				const positionBtn = document.createElement("button");
+				positionBtn.textContent = `${index}`;
+				positionBtn.id = index;
+				positionBtn.setAttribute("data-position", index);
+				positionBtn.addEventListener("click", game.playRound);
+				board.appendChild(positionBtn);
+				return;
+			}
+			const positionDiv = document.createElement("div");
+			positionDiv.id = index;
+			positionDiv.textContent = position;
+
+			board.appendChild(positionDiv);
+		});
+
+		boardContainer.appendChild(board);
+	}
+
+	return { init, render, gameOver };
+}
 
 function createBoard() {
 	let boardArray;
@@ -100,55 +156,44 @@ function createBoard() {
 	return { getBoard, getNewBoard, setPosition, hasFreeSpace, getReg };
 }
 
-function createPlayer(name, type) {
-	let plays = [];
+// function createPlayer(name, type) {
+// 	let plays = [];
 
-	function play(board) {
-		const boardReg = board.getReg();
+// 	function play(board) {
+// 		const boardReg = board.getReg();
 
-		console.log({ boardReg });
-		let choice;
+// 		console.log({ boardReg });
+// 		let choice;
 
-		while (choice === undefined) {
-			const v = Math.floor(Math.random() * 9);
-			if (boardReg[v] === undefined) {
-				choice = v;
-			}
-		}
+// 		while (choice === undefined) {
+// 			const v = Math.floor(Math.random() * 9);
+// 			if (boardReg[v] === undefined) {
+// 				choice = v;
+// 			}
+// 		}
 
-		plays.push(choice);
-		return choice;
-	}
+// 		plays.push(choice);
+// 		return choice;
+// 	}
 
-	function getPlays() {
-		return plays;
-	}
+// 	function getPlays() {
+// 		return plays;
+// 	}
 
-	function getName() {
-		return name;
-	}
+// 	function getName() {
+// 		return name;
+// 	}
 
-	function getType() {
-		return type;
-	}
+// 	function getType() {
+// 		return type;
+// 	}
 
-	return {
-		play,
-		getPlays,
-		getName,
-		getType,
-	};
-}
+// 	return {
+// 		play,
+// 		getPlays,
+// 		getName,
+// 		getType,
+// 	};
+// }
 
 game.init();
-
-// function playRound(position, type) {
-// 	const position = p1.play(board);
-// 	const type = p1.getType();
-// 	board.setPosition(position, type);
-// 	console.log(board.getBoard());
-
-// 	if (stopCondition(type)) {
-// 		alert("Game over!");
-// 	}
-// }
