@@ -4,7 +4,7 @@ I am improving my skills as a web developer, learning Fullstack Javascript with 
 
 ## Deploy
 
-You can [see the library](https://lucaspasseri.github.io/odin-tic-tac-toe/) on Github pages.
+You can [play the game](https://lucaspasseri.github.io/odin-tic-tac-toe/) on Github pages.
 
 ## Me
 
