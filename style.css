@@ -13,14 +13,14 @@
 	--board-width: 660px;
 
 	@media (max-width: 690px) {
-		--board-width: 560px;
+		--board-width: 360px;
 
 		.boardContainer {
 			> div {
 				> div,
 				> button {
-					font-size: 7.2em;
-					min-height: 165px;
+					font-size: 4.2em;
+					min-height: 100px;
 				}
 			}
 		}
