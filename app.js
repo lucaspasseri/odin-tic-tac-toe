@@ -24,6 +24,8 @@ const game = (function () {
 
 		if (stopCondition(currType)) {
 			interface.gameOver();
+
+			// maybe switch alert from dialog
 			alert("Game over!");
 		}
 	}
@@ -69,7 +71,6 @@ function createInterface() {
 	const boardContainer = document.querySelector(".boardContainer");
 
 	function init(board) {
-		console.log("interface init");
 		boardRef = board;
 		document
 			.querySelector("#startBtn")
@@ -105,7 +106,6 @@ function createInterface() {
 		boardRef?.getBoard().forEach((position, index) => {
 			if (position === null) {
 				const positionBtn = document.createElement("button");
-				positionBtn.textContent = `${index}`;
 				positionBtn.id = index;
 				positionBtn.setAttribute("data-position", index);
 				positionBtn.addEventListener("click", game.playRound);
@@ -114,8 +114,9 @@ function createInterface() {
 			}
 			const positionDiv = document.createElement("div");
 			positionDiv.id = index;
-			positionDiv.textContent = position;
-
+			const span = document.createElement("span");
+			span.textContent = position;
+			positionDiv.appendChild(span);
 			board.appendChild(positionDiv);
 		});
 
@@ -155,6 +156,9 @@ function createBoard() {
 
 	return { getBoard, getNewBoard, setPosition, hasFreeSpace, getReg };
 }
+
+// Clean up the interface to allow players to put in their names, include a button to start/restart
+// the game and add a display element that shows the results upon game end!
 
 // function createPlayer(name, type) {
 // 	let plays = [];
