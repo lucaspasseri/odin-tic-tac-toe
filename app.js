@@ -22,40 +22,41 @@ const game = (function () {
 		board.setPosition(position, currType);
 		interface.render();
 
-		if (stopCondition(currType)) {
-			interface.gameOver();
-			document.querySelector(".dialog").showModal();
+		const stopCondition = verifyStopCondition(position, currType);
+		console.log(stopCondition);
+		if (!!stopCondition) {
+			interface.gameOver(stopCondition);
 		}
 	}
 
-	function stopCondition(type) {
+	function verifyStopCondition(position, type) {
 		const arr = board.getBoard();
 
-		const row1 = arr[0] === type && arr[1] === type && arr[2] === type;
-		const row2 = arr[3] === type && arr[4] === type && arr[5] === type;
-		const row3 = arr[6] === type && arr[7] === type && arr[8] === type;
+		const filteredByType = arr
+			.map((_v, index) => (arr[index] === type ? index : null))
+			.filter(pos => pos !== null);
+		const stringByType = filteredByType.join("");
 
-		const col1 = arr[0] === type && arr[3] === type && arr[6] === type;
-		const col2 = arr[1] === type && arr[4] === type && arr[7] === type;
-		const col3 = arr[2] === type && arr[5] === type && arr[8] === type;
+		const stopStrings = [
+			"012",
+			"345",
+			"678",
+			"036",
+			"147",
+			"258",
+			"048",
+			"246",
+		].filter(str => str.includes(position));
 
-		const diag1 = arr[0] === type && arr[4] === type && arr[8] === type;
-		const diag2 = arr[2] === type && arr[4] === type && arr[6] === type;
+		for (let i = 0; i < stopStrings.length; i++) {
+			const currString = stopStrings[i];
+			if (stringByType.includes(currString)) {
+				return currString;
+			}
+		}
 
-		const notHaveFreeSpace = !board.hasFreeSpace();
-
-		if (
-			row1 ||
-			row2 ||
-			row3 ||
-			col1 ||
-			col2 ||
-			col3 ||
-			diag1 ||
-			diag2 ||
-			notHaveFreeSpace
-		) {
-			return true;
+		if (!board.hasFreeSpace()) {
+			return "full";
 		}
 
 		return false;
@@ -76,6 +77,11 @@ function createInterface() {
 		document
 			.querySelector("#resetBtn")
 			.addEventListener("click", resetBtnHandler);
+		document.querySelector("#closeBtn").addEventListener("click", closeDialog);
+	}
+
+	function closeDialog() {
+		document.querySelector(".dialog").close();
 	}
 
 	function startBtnHandler(e) {
@@ -93,8 +99,15 @@ function createInterface() {
 		game.init();
 	}
 
-	function gameOver() {
+	function gameOver(stopCondition) {
 		document.querySelector("#resetBtn").disabled = false;
+
+		const p = document.createElement("p");
+		p.textContent = stopCondition;
+
+		const dialog = document.querySelector(".dialog");
+		dialog.appendChild(p);
+		dialog.showModal();
 	}
 
 	function render() {

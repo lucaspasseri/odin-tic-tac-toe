@@ -15,6 +15,10 @@
 	@media (max-width: 690px) {
 		--board-width: 360px;
 
+		dialog {
+			font-size: 1.4em;
+		}
+
 		.boardContainer {
 			> div {
 				> div,
@@ -130,7 +134,24 @@ button {
 	background-color: var(--dark-green);
 	color: var(--light-green);
 	border-radius: 1em;
-	border: 0.4em solid var(--light-green);
+	border: 0.2em solid var(--light-green);
 	font-size: 2em;
 	font-family: "WhiteOn";
+	position: relative;
+
+	> button {
+		font-family: "WhiteOn";
+		border: 0;
+		padding: 0;
+		background-color: var(--dark-green);
+		color: var(--light-green);
+		position: absolute;
+		top: 0.5em;
+		right: 0.5em;
+		span {
+			font-size: 2.4em;
+			line-height: 1em;
+			transform: scaleY(0.6);
+		}
+	}
 }
