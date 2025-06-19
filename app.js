@@ -24,9 +24,7 @@ const game = (function () {
 
 		if (stopCondition(currType)) {
 			interface.gameOver();
-
-			// maybe switch alert from dialog
-			alert("Game over!");
+			document.querySelector(".dialog").showModal();
 		}
 	}
 
