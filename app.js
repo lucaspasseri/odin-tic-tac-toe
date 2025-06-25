@@ -23,7 +23,6 @@ const game = (function () {
 		interface.render();
 
 		const stopCondition = verifyStopCondition(position, currType);
-		console.log(stopCondition);
 		if (!!stopCondition) {
 			interface.gameOver(stopCondition);
 		}
@@ -32,31 +31,37 @@ const game = (function () {
 	function verifyStopCondition(position, type) {
 		const arr = board.getBoard();
 
-		const filteredByType = arr
+		const stringPositionByType = arr
 			.map((_v, index) => (arr[index] === type ? index : null))
-			.filter(pos => pos !== null);
-		const stringByType = filteredByType.join("");
+			.filter(pos => pos !== null)
+			.join("");
 
-		const stopStrings = [
-			"012",
-			"345",
-			"678",
-			"036",
-			"147",
-			"258",
-			"048",
-			"246",
-		].filter(str => str.includes(position));
+		const regexAndEndGame = [
+			{ regex: "0[0-9]*1[0-9]*2", endGame: "012" },
+			{ regex: "3[0-9]*4[0-9]*5", endGame: "345" },
+			{ regex: "6[0-9]*7[0-9]*8", endGame: "678" },
+			{ regex: "0[0-9]*3[0-9]*6", endGame: "036" },
+			{ regex: "1[0-9]*4[0-9]*7", endGame: "147" },
+			{ regex: "2[0-9]*5[0-9]*8", endGame: "258" },
+			{ regex: "0[0-9]*4[0-9]*8", endGame: "048" },
+			{ regex: "2[0-9]*4[0-9]*6", endGame: "246" },
+		].filter(obj => {
+			if (obj.endGame.includes(position)) {
+				return obj;
+			}
+		});
 
-		for (let i = 0; i < stopStrings.length; i++) {
-			const currString = stopStrings[i];
-			if (stringByType.includes(currString)) {
-				return currString;
+		for (let i = 0; i < regexAndEndGame.length; i++) {
+			const curr = regexAndEndGame[i];
+			const re = new RegExp(curr.regex);
+
+			if (re.test(stringPositionByType)) {
+				return { playerType: type, endGame: curr.endGame };
 			}
 		}
 
 		if (!board.hasFreeSpace()) {
-			return "full";
+			return { playerType: type, endGame: "draw" };
 		}
 
 		return false;
@@ -77,7 +82,9 @@ function createInterface() {
 		document
 			.querySelector("#resetBtn")
 			.addEventListener("click", resetBtnHandler);
-		document.querySelector("#closeBtn").addEventListener("click", closeDialog);
+		document
+			.querySelector("#dialogCloseBtn")
+			.addEventListener("click", closeDialog);
 	}
 
 	function closeDialog() {
@@ -101,12 +108,33 @@ function createInterface() {
 
 	function gameOver(stopCondition) {
 		document.querySelector("#resetBtn").disabled = false;
-
-		const p = document.createElement("p");
-		p.textContent = stopCondition;
-
+		document.querySelector("#dialogContent").innerHTML = "";
+		const p1 = document.createElement("p");
+		p1.textContent = stopCondition.playerType;
 		const dialog = document.querySelector(".dialog");
-		dialog.appendChild(p);
+		const content = document.querySelector("#dialogContent");
+		content.appendChild(p1);
+
+		if (stopCondition.endGame === "draw") {
+			const cells = document.querySelectorAll(".cell");
+
+			cells.forEach(cell => cell.classList.add("draw"));
+		} else {
+			const cells = document.querySelectorAll(".cell");
+			cells.forEach(cell => cell.removeEventListener("click", game.playRound));
+
+			const highlightIndexArr = stopCondition.endGame.split("");
+
+			for (let i = 0; i < highlightIndexArr.length; i++) {
+				const currIndex = highlightIndexArr[i];
+
+				const cell = document.querySelector(
+					`div.boardContainer div#cell-${currIndex}`
+				);
+				cell.classList.add("victory");
+			}
+		}
+
 		dialog.showModal();
 	}
 
@@ -117,14 +145,16 @@ function createInterface() {
 		boardRef?.getBoard().forEach((position, index) => {
 			if (position === null) {
 				const positionBtn = document.createElement("button");
-				positionBtn.id = index;
+				positionBtn.id = `cell-${index}`;
+				positionBtn.classList.add("cell");
 				positionBtn.setAttribute("data-position", index);
 				positionBtn.addEventListener("click", game.playRound);
 				board.appendChild(positionBtn);
 				return;
 			}
 			const positionDiv = document.createElement("div");
-			positionDiv.id = index;
+			positionDiv.id = `cell-${index}`;
+			positionDiv.classList.add("cell");
 			const span = document.createElement("span");
 			span.textContent = position;
 			positionDiv.appendChild(span);
@@ -170,45 +200,5 @@ function createBoard() {
 
 // Clean up the interface to allow players to put in their names, include a button to start/restart
 // the game and add a display element that shows the results upon game end!
-
-// function createPlayer(name, type) {
-// 	let plays = [];
-
-// 	function play(board) {
-// 		const boardReg = board.getReg();
-
-// 		console.log({ boardReg });
-// 		let choice;
-
-// 		while (choice === undefined) {
-// 			const v = Math.floor(Math.random() * 9);
-// 			if (boardReg[v] === undefined) {
-// 				choice = v;
-// 			}
-// 		}
-
-// 		plays.push(choice);
-// 		return choice;
-// 	}
-
-// 	function getPlays() {
-// 		return plays;
-// 	}
-
-// 	function getName() {
-// 		return name;
-// 	}
-
-// 	function getType() {
-// 		return type;
-// 	}
-
-// 	return {
-// 		play,
-// 		getPlays,
-// 		getName,
-// 		getType,
-// 	};
-// }
 
 game.init();
