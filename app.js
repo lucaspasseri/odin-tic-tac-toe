@@ -1,14 +1,20 @@
 const game = (function () {
 	let board;
 	let interface;
+	let player;
 
-	const type = ["X", "O"];
+	const type = ["Χ", "Ο"]; // Special characters
 
 	function init() {
 		board = createBoard();
 		board.getNewBoard();
+		player = createPlayer();
 		interface = createInterface();
-		interface.init(board);
+		interface.init(board, player);
+	}
+
+	function getPlayer() {
+		return player;
 	}
 
 	function playRound(position) {
@@ -67,18 +73,22 @@ const game = (function () {
 		return false;
 	}
 
-	return { init, playRound };
+	return { init, playRound, getPlayer };
 })();
 
 function createInterface() {
 	let boardRef;
+	let playerRef;
 	const boardContainer = document.querySelector(".boardContainer");
 
-	function init(board) {
+	function init(board, player) {
 		boardRef = board;
+		playerRef = player;
+
+		boardContainer.classList.add("hidden");
 		document
-			.querySelector("#startBtn")
-			.addEventListener("click", startBtnHandler);
+			.querySelector("#playerNameForm")
+			.addEventListener("submit", submitPlayerName);
 		document
 			.querySelector("#resetBtn")
 			.addEventListener("click", resetBtnHandler);
@@ -91,10 +101,21 @@ function createInterface() {
 		document.querySelector(".dialog").close();
 	}
 
-	function startBtnHandler(e) {
-		e.currentTarget.disabled = true;
+	function submitPlayerName(e) {
+		e.preventDefault();
+		console.log(1);
+
+		const startBtn = e.submitter;
+		startBtn.disabled = true;
 		document.querySelector("#resetBtn").disabled = false;
 
+		const playerXName = new FormData(e.target).get("playerXName");
+		const player0Name = new FormData(e.target).get("player0Name");
+		playerRef.setXName(playerXName);
+		playerRef.set0Name(player0Name);
+
+		document.querySelector(".inputsContainer").classList.add("hidden");
+		boardContainer.classList.remove("hidden");
 		render();
 	}
 
@@ -102,17 +123,39 @@ function createInterface() {
 		e.currentTarget.disabled = true;
 		document.querySelector("#startBtn").disabled = false;
 
+		document.querySelector(".boardContainer").classList.add("hidden");
+		document.querySelector(".inputsContainer").classList.remove("hidden");
 		boardContainer.innerHTML = "";
+
+		const playerNameForm = document.querySelector("#playerNameForm");
+		playerNameForm.reset();
+		playerNameForm.removeEventListener("submit", submitPlayerName);
 		game.init();
 	}
 
 	function gameOver(stopCondition) {
 		document.querySelector("#resetBtn").disabled = false;
 		document.querySelector("#dialogContent").innerHTML = "";
+		const nameSpan = document.createElement("span");
+		const typeSpan = document.createElement("span");
+		// Special characters
+		if (stopCondition.playerType === "Χ") {
+			nameSpan.textContent = playerRef.getXName();
+			typeSpan.textContent = "Χ";
+		} else {
+			nameSpan.textContent = playerRef.get0Name();
+			typeSpan.textContent = "Ο";
+		}
+
+		const p0 = document.createElement("p");
 		const p1 = document.createElement("p");
-		p1.textContent = stopCondition.playerType;
+		p1.textContent = "with ";
 		const dialog = document.querySelector(".dialog");
 		const content = document.querySelector("#dialogContent");
+		content.classList.add("scoreStyle");
+		p0.append(nameSpan, " won!!!");
+		p1.appendChild(typeSpan);
+		content.appendChild(p0);
 		content.appendChild(p1);
 
 		if (stopCondition.endGame === "draw") {
@@ -200,5 +243,32 @@ function createBoard() {
 
 // Clean up the interface to allow players to put in their names, include a button to start/restart
 // the game and add a display element that shows the results upon game end!
+
+function createPlayer() {
+	let playerXName;
+	let player0Name;
+
+	function getXName() {
+		return playerXName;
+	}
+	function setXName(name = "Player 1") {
+		playerXName = name.length === 0 ? "Player 1" : name;
+	}
+
+	function get0Name() {
+		return player0Name;
+	}
+
+	function set0Name(name = "Player 2") {
+		player0Name = name.length === 0 ? "Player 2" : name;
+	}
+
+	return {
+		getXName,
+		setXName,
+		get0Name,
+		set0Name,
+	};
+}
 
 game.init();

@@ -10,15 +10,38 @@
 	<body>
 		<div class="container">
 			<h1>TIC TAC TOE</h1>
+			<div class="inputsContainer">
+				<h2>Welcome, would you like to play?</h2>
+				<form id="playerNameForm">
+					<label for="playerXName">
+						Who will play &Chi;:
+						<input
+							type="text"
+							id="playerXName"
+							name="playerXName"
+							placeholder="Player 1"
+						/>
+					</label>
+					<label for="player0Name">
+						Who will play &Omicron;:
+						<input
+							type="text"
+							id="player0Name"
+							name="player0Name"
+							placeholder="Player 2"
+						/>
+					</label>
+				</form>
+			</div>
 			<div class="boardContainer"></div>
 			<div class="buttonsContainer">
-				<button id="startBtn">Start</button>
+				<button id="startBtn" form="playerNameForm">Start</button>
 				<button id="resetBtn" disabled>Reset</button>
 			</div>
 			<dialog closedby="any" class="dialog">
 				<h2>Game Over!</h2>
 				<button id="dialogCloseBtn" autofocus><span>X</span></button>
-				<div id="dialogContent"></div>
+				<div id="dialogContent" class="scoreStyle"></div>
 			</dialog>
 		</div>
 		<script src="./app.js"></script>

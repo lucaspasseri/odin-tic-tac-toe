@@ -62,12 +62,23 @@ button {
 		Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
+.inputsContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 3em 0;
+
+	form {
+		display: flex;
+		flex-direction: column;
+	}
+}
+
 .container {
 	width: var(--board-width);
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	gap: 8em;
 	padding: 3em 0;
 
 	h1 {
@@ -89,12 +100,18 @@ button {
 		font-size: 1.8em;
 		padding: 0.3em 1.2em;
 		border-radius: 0.15em;
+
+		&:disabled {
+			filter: grayscale(1);
+			cursor: not-allowed;
+		}
 	}
 }
 
 .boardContainer {
 	display: flex;
 	justify-content: center;
+	padding: 3em 0;
 
 	> div {
 		background-color: var(--dark-green);
@@ -119,11 +136,6 @@ button {
 			align-items: center;
 			font-size: 9em;
 			color: var(--dark-green);
-			font-family: "WhiteOn";
-
-			span {
-				transform: scaleY(0.6);
-			}
 		}
 
 		.victory {
@@ -161,6 +173,34 @@ button {
 		transform: scaleY(0.7);
 		span {
 			font-size: 2.6em;
+		}
+	}
+}
+
+.hidden {
+	display: none;
+}
+
+.scoreStyle {
+	font-size: 0.7em;
+
+	p:first-of-type {
+		span {
+			padding-right: 0.2em;
+			font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+				Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+				sans-serif;
+			font-size: 1.8em;
+		}
+	}
+
+	p:nth-of-type(2) {
+		span {
+			padding-left: 0.2em;
+			font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+				Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+				sans-serif;
+			font-size: 1.8em;
 		}
 	}
 }
