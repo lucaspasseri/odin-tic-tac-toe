@@ -199,6 +199,7 @@ button {
 		top: 0.8em;
 		right: 1.2em;
 		transform: scaleY(0.7);
+		box-shadow: var(--box-shadow);
 		span {
 			font-size: 2.6em;
 		}

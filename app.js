@@ -103,7 +103,6 @@ function createInterface() {
 
 	function submitPlayerName(e) {
 		e.preventDefault();
-		console.log(1);
 
 		const startBtn = e.submitter;
 		startBtn.disabled = true;
@@ -137,33 +136,38 @@ function createInterface() {
 	function gameOver(stopCondition) {
 		document.querySelector("#resetBtn").disabled = false;
 		document.querySelector("#dialogContent").innerHTML = "";
-		const nameSpan = document.createElement("span");
-		const typeSpan = document.createElement("span");
-		// Special characters
-		if (stopCondition.playerType === "Χ") {
-			nameSpan.textContent = playerRef.getXName();
-			typeSpan.textContent = "Χ";
-		} else {
-			nameSpan.textContent = playerRef.get0Name();
-			typeSpan.textContent = "Ο";
-		}
 
-		const p0 = document.createElement("p");
-		const p1 = document.createElement("p");
-		p1.textContent = "with ";
-		const dialog = document.querySelector(".dialog");
 		const content = document.querySelector("#dialogContent");
-		content.classList.add("scoreStyle");
-		p0.append(nameSpan, " won!!!");
-		p1.appendChild(typeSpan);
-		content.appendChild(p0);
-		content.appendChild(p1);
 
 		if (stopCondition.endGame === "draw") {
 			const cells = document.querySelectorAll(".cell");
-
 			cells.forEach(cell => cell.classList.add("draw"));
+
+			const p0 = document.createElement("p");
+			p0.textContent = "It's a draw!";
+			content.appendChild(p0);
 		} else {
+			content.classList.add("scoreStyle");
+			const nameSpan = document.createElement("span");
+			const typeSpan = document.createElement("span");
+			// Special characters
+			if (stopCondition.playerType === "Χ") {
+				nameSpan.textContent = playerRef.getXName();
+				typeSpan.textContent = "Χ";
+			} else {
+				nameSpan.textContent = playerRef.get0Name();
+				typeSpan.textContent = "Ο";
+			}
+
+			const p0 = document.createElement("p");
+			const p1 = document.createElement("p");
+			p1.textContent = "with ";
+
+			p0.append(nameSpan, " won!!!");
+			p1.appendChild(typeSpan);
+			content.appendChild(p0);
+			content.appendChild(p1);
+
 			const cells = document.querySelectorAll(".cell");
 			cells.forEach(cell => cell.removeEventListener("click", game.playRound));
 
@@ -182,7 +186,7 @@ function createInterface() {
 			}
 		}
 
-		dialog.showModal();
+		document.querySelector(".dialog").showModal();
 	}
 
 	function render() {
