@@ -130,6 +130,7 @@ function createInterface() {
 		const playerNameForm = document.querySelector("#playerNameForm");
 		playerNameForm.reset();
 		playerNameForm.removeEventListener("submit", submitPlayerName);
+
 		game.init();
 	}
 
@@ -165,6 +166,9 @@ function createInterface() {
 		} else {
 			const cells = document.querySelectorAll(".cell");
 			cells.forEach(cell => cell.removeEventListener("click", game.playRound));
+
+			const emptyCells = document.querySelectorAll("button.cell");
+			emptyCells.forEach(cell => cell.classList.add("notAllowed"));
 
 			const highlightIndexArr = stopCondition.endGame.split("");
 
@@ -240,9 +244,6 @@ function createBoard() {
 
 	return { getBoard, getNewBoard, setPosition, hasFreeSpace, getReg };
 }
-
-// Clean up the interface to allow players to put in their names, include a button to start/restart
-// the game and add a display element that shows the results upon game end!
 
 function createPlayer() {
 	let playerXName;
