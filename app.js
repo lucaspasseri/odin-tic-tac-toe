@@ -13,10 +13,6 @@ const game = (function () {
 		interface.init(board, player);
 	}
 
-	function getPlayer() {
-		return player;
-	}
-
 	function playRound(position) {
 		if (typeof position === "object") {
 			const target = position.currentTarget;
@@ -73,7 +69,7 @@ const game = (function () {
 		return false;
 	}
 
-	return { init, playRound, getPlayer };
+	return { init, playRound };
 })();
 
 function createInterface() {
